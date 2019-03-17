@@ -1,0 +1,246 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'allDownload.jsp' starting page</title>
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+<link rel="stylesheet"
+	href="jsp/css/plugins/bootstrap/bootstrap.min.css" type="text/css"></link>
+<link rel="stylesheet"
+	href="jsp/css/plugins/bootstrap-table/bootstrap-table.min.css">
+<link rel="stylesheet" href="jsp/css/plugins/easyui/easyui.css">
+<link rel="stylesheet" href="jsp/css/plugins/easyui/icon.css">
+<link rel="stylesheet" href="jsp/css/plugins/fontawe/font-awesome.css"
+	type="text/css"></link>
+<link rel="stylesheet" href="jsp/jexce/dist/css/jquery.jexcel.css"
+	type="text/css"></link>
+<script type="text/javascript" src="jsp/js/plugins/jQuery/jquery.min.js"></script>
+<script src="jsp/js/plugins/easyui/jquery.easyui.min.js"></script>
+<script src="jsp/js/plugins/easyui/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="jsp/jexce/laydate/laydate.js"></script>
+<script type="text/javascript"
+	src="jsp/js/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="jsp/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script
+	src="jsp/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="jsp/download/js/allDownload.js"></script>
+<style>
+#seltype {
+	width: 150px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+}
+
+#d-center {
+	height: auto;
+	min-height:200px;
+	width: 100%;
+}
+
+#d-bottom {
+	height: 200px;
+	width: 100%;
+}
+
+#d-center,#d-bottom {
+	border: 1px solid #cccccc;
+	margin-top:10px;
+}
+
+#d-bottom table tr td {
+	padding: 5px;
+}
+#d-bottom table tr td input,#d-bottom table tr td select{
+	width:170px;
+}
+#subject
+</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<form id="postForm" class="form-inline"
+			enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="startDate">开始日期：</label><input class="form-control"
+					type="text" id="startDate" name="downDate">
+			</div>
+			<div class="col-md-3"></div>
+			<div class="form-group">
+				<label for="endDate">结束日期：</label><input class="form-control"
+					type="text" id="endDate" name="downDate">
+			</div>
+			<div class="form-group">
+				<button id="queryData" class="btn btn-primary" type="button">查询</button>
+			</div>
+		</form>
+		<div id="d-center">
+			<table id="queryTab">
+
+			</table>
+		</div>
+		<div id="d-bottom">
+			<form method="post">
+				<table class="text-right">
+					<tr>
+						<td class="form-inline"><label>日期：</label> <input id="downdate" class="form-control" type="text" /> <script
+								type="text/javascript">
+							var toDate = new Date();//获取系统当前时间
+							laydate.render({
+								elem : '#downdate',
+								//type : 'month',
+								format : 'yyyy-MM-dd',
+								value : toDate,
+								btns : [ 'confirm' ]
+							});
+						</script></td>
+						<td class="form-inline"><label>凭证编号：</label> <input id="voucher_num"  class="form-control" type="text"/>
+						</td>
+						<td class="form-inline"><label>对方科目：</label><input id="subject" type="text"></td>
+						<td class="form-inline"><label>摘要：</label><input id="abstract" type="text"></td>
+					</tr>
+					<tr>
+						<!-- <td class="form-inline"><label>制单编号：</label><input id="touching_num" type="text"></td> -->
+						<td class="form-inline"><label>凭证模板：</label><input id="voucher_model" type="text"/>
+						</td>
+						<td class="form-inline"><label>帐套来源：</label><input id="account_source" type="text"/></td>
+						<td><input id="vou" type="text" hidden="true"/>
+						</td>
+						<td><input id="acc" type="text" hidden="true"/></td>
+					</tr>
+					<tr>
+						<td class="form-inline"><label>单位编码：</label><input id="danWei_num" type="text" /></td>
+						<td class="form-inline"><label>部门编码：</label><input id="section_num" type="text" />
+						</td>
+						<td class="form-inline"><label>职员编码：</label><input id="jober_num" type="text" /></td>
+						<td class="form-inline"><label>统计编码：</label><input id="account_num" type="text" /></td>
+					</tr>
+					<tr>
+						<td class="form-inline"><label>项目编码：</label><input id="subject_num" type="text" /></td>
+						<td><button type="button" class="btn btn-primary" onclick="download()"><i class="glyphicon glyphicon-save"></i>下载</button></td>
+					</tr>
+					
+				</table>
+			</form>
+		</div>
+	</div>
+	<script>
+		//凭证模板改变事件
+			$("#voucher_model").combotree({
+				onChange:function(){
+					//alert("jdodopdopqop");
+					var vou,acc;
+					vou = $('#voucher_model').combotree("tree").tree('getSelected');
+					acc = $('#account_source').combotree("tree").tree('getSelected');
+					var account,voucher;
+					if(acc!=null){
+						account=acc['icon'];
+					}
+					if(vou!=null){
+						voucher=vou['icon'];
+					}
+					sendData(voucher,account);
+					
+				}
+			});	
+			//帐套来源改变事件	
+			$("#account_source").combotree({
+				onChange:function(){
+					var vou,acc;
+					vou = $('#voucher_model').combotree("tree").tree('getSelected');
+					acc = $('#account_source').combotree("tree").tree('getSelected');
+					var account,voucher;
+					if(acc!=null){
+						account=acc['icon'];
+					}
+					if(vou!=null){
+						voucher=vou['icon'];
+					}
+					sendData(voucher,account);
+				}
+			});		
+			function sendData(vCode,aCode){
+				//console.log("djoadjo");
+				$.ajax({
+					type:'post',
+					url:'test/updateRecord.do',
+					dataType:"json",
+					data:{
+						voucher:vCode,
+						account:aCode
+					},
+					error:function(e){
+						console.log(e);
+					},
+					success:function(e){
+						//console.log("chenggong");
+					}
+					
+				});
+			}
+			//下载的方法
+		function download(){
+			var ids="";
+			var getSelection= $("#queryTab").bootstrapTable('getAllSelections');
+
+            if(getSelection.length>=1){
+                for(var i =0;i<getSelection.length;i++){
+                   ids=ids+"'"+getSelection[i].id+"',";
+                }
+            }else{
+            	alert("请在表格中选中一行");
+            }
+            ids = ids.substring(0, ids.length - 1);
+			var downdate=$("#downdate").val();//日期
+			var voucher_num=encodeURI(encodeURI($("#voucher_num").val()));//凭证编号
+			var subject=encodeURI(encodeURI($("#subject").combobox("getValue")));//科目
+			//var subject=$("#subject").val();
+			var digest=encodeURI(encodeURI($("#abstract").combotree("tree").tree('getSelected')['icon']));//摘要
+			var voucher_model,account_source;
+			var vmodel=$("#voucher_model").combotree("tree").tree('getSelected');
+			if(vmodel==null){
+				voucher_model=encodeURI(encodeURI($("#vou").val()));
+			}else{
+				voucher_model=encodeURI(encodeURI(vmodel['icon']));
+			}
+			asource=$("#account_source").combotree("tree").tree('getSelected');
+			if(asource==null){
+				account_source=encodeURI(encodeURI($("#acc").val()));
+			}else{
+				account_source=encodeURI(encodeURI(asource['icon']));
+			}
+			/* var danWei_num=$("#danWei_num").val();
+			var section_num=$("#section_num").val();
+			var subject_num=$("#subject_num").val();
+			var jober_num=$("#jober_num").val(); */
+			var danWei_num=encodeURI(encodeURI($("#danWei_num").combobox("getValue")));
+			var section_num=encodeURI(encodeURI($("#section_num").combobox("getValue")));
+			var jober_num=encodeURI(encodeURI($("#jober_num").combobox("getValue")));
+			var account_num=encodeURI(encodeURI($("#account_num").combotree("tree").tree('getSelected')['icon']));//统计
+			var subject_num=encodeURI(encodeURI($("#subject_num").combobox("getValue")));//项目
+			var dataStr=downdate+","+voucher_num+","+digest+","+subject+","
+			+voucher_model+","+account_source+","+danWei_num+","+section_num+","+jober_num+","
+			+account_num+","+subject_num;
+			//console.log(dataStr);
+			var date1 = "ids="+ids+"&data="+dataStr;
+         	this.window.open(  "<%=basePath%>file/downloadFile.do?" + date1);
+         	//$("form")[1].reset();
+		}
+	</script>
+</body>
+</html>

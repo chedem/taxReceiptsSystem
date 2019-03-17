@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="invoicinfo"
+  id="myeclipse.1528090036715"
+  context-root="/invoicinfo"
+  j2ee-spec="5.0"
+  archive="invoicinfo.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

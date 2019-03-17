@@ -1,0 +1,50 @@
+/**
+ * (c) 2013 Jexcel Plugin | Bossanova UI
+ * http://www.github.com/paulhodel/jexcel
+ *
+ * @author: Paul Hodel <paul.hodel@gmail.com>
+ * @description: Web spreadsheet
+ */
+ 
+.jexcel > thead > tr > td
+{
+    border-right:1px solid #d4d4d4;
+    border-bottom:1px solid #d4d4d4;
+}
+.jexcel > tbody > tr > td
+{
+    border-right:1px solid #d4d4d4;
+    border-bottom:1px solid #d4d4d4;
+}
+.jexcel .highlight-left
+{
+    border-left:1px solid #217346;
+}
+.jexcel .highlight-right
+{
+    border-right:1px solid #217346;
+}
+.jexcel .highlight-top
+{
+    border-top:1px solid #217346;
+}
+.jexcel .highlight-bottom
+{
+    border-bottom:1px solid #217346;
+}
+.jexcel .selection-left
+{
+    border-left:1px solid #217346;
+}
+.jexcel .selection-right
+{
+    border-right:1px solid #217346;
+}
+.jexcel .selection-top
+{
+    border-top:1px solid #217346;
+}
+.jexcel .selection-bottom
+{
+    border-bottom:1px solid #217346;
+}

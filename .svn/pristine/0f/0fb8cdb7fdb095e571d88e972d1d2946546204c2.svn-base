@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:aop="http://www.springframework.org/schema/aop" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xsi:schemaLocation="
+http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/aop 
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+">
+
+<!--   	<context:component-scan base-package="com" />
+ -->  	
+  <!-- 开启aop注解方式,默认为false -->  
+     <aop:aspectj-autoproxy/>
+  	<!-- 声明 Audience bean -->
+    <bean id="audience" class="com.comm.dbsource.DataSourceAspect"/>
+
+    <!-- 使用 <aop:pointcut> 定义命名切点 -->
+    <aop:config>
+        <aop:aspect ref="audience">
+            <!-- 如果想让定义的切点能够在多个切面使用，我们可以把 <aop:pointcut> 元素放在 <aop:config> 元素的范围内 -->
+            <aop:pointcut id="performance" expression="execution(* com.comm.dbsource.DataSource.*(..))"/>
+            <!-- 表演之前  com.comm.dbsource.DataSource -->
+            <aop:before method="before" pointcut-ref="performance"/>
+            <!-- 表演之前 -->
+<!--             <aop:before method="takeSeats" pointcut-ref="performance"/>
+ -->            <!-- 表演之后 -->
+<!--             <aop:after-returning method="applause" pointcut-ref="performance"/>
+ -->            <!-- 表演失败之后 -->
+<!--             <aop:after-throwing method="demandRefund" pointcut-ref="performance"/>
+ -->        </aop:aspect>
+    </aop:config>
+</beans>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yrkj.code.dao.ICodeDao" >
+  <resultMap id="codeResultMap" type="com.yrkj.code.bean.Code" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="remark_1" property="remark1" jdbcType="VARCHAR" />
+    <result column="remark_4" property="remark4" jdbcType="VARCHAR" />
+    <result column="remark_5" property="remark5" jdbcType="VARCHAR" />
+    <result column="remark_3" property="remark3" jdbcType="VARCHAR" />
+    <result column="remark_2" property="remark2" jdbcType="VARCHAR" />
+    <result column="IS_VALID" property="is_valid" jdbcType="VARCHAR" />
+    <result column="P_code" property="pCode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="codeResultMap1" type="com.yrkj.code.bean.Company" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="code" property="icon" jdbcType="VARCHAR" />
+    <result column="name" property="text" jdbcType="VARCHAR" />
+    <result column="P_code" property="parent" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, username, password
+  </sql>
+  
+     <select id="getCompanyData1" parameterType="string" resultType="com.yrkj.code.bean.Company" >
+  	SELECT id as "id", code as "icon", name as "text",type as "type" , 
+    P_code as "parent" FROM s_code WHERE IS_VALID ='1' and  p_code='1'  
+  </select>
+  
+   <select id="getCompanyData" parameterType="string" resultType="com.yrkj.code.bean.Company" >
+  	SELECT id as "id", code as "icon", name as "text", type as "type" , 
+    P_code as "parent" FROM s_code WHERE IS_VALID ='1' and type=#{type} and p_code=#{pCode}  
+  </select>
+<!--   <select id="selectByPrimaryKey" resultMap="UserMap" parameterType="com.yrkj.login.bean.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from adminuser
+    where id = #{id}
+  </select>
+  
+  <select id="selectByUsernameAndPassword" resultMap="UserMap" parameterType="com.yrkj.login.bean.User" >
+    select * from adminuser
+    where username = #{username} and password = #{password}
+  </select> -->
+  
+  <!-- <delete id="deleteByPrimaryKey" parameterType="com.yrkj.login.bean.User" >
+    delete from adminuser
+    where id = #{id}
+  </delete>
+  
+  <insert id="insert" parameterType="com.yrkj.login.bean.User" useGeneratedKeys="true" keyProperty="id">
+    insert into adminuser (username, password)
+    values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.yrkj.login.bean.User" >
+    insert into adminuser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.yrkj.login.bean.User" >
+    update adminuser
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+   -->
+     <insert id="saveCode" parameterType="com.yrkj.code.bean.Code"  useGeneratedKeys="true"
+    keyProperty="id">
+    insert into s_code ( code, name, 
+      type, remark_1, remark_4, 
+      remark_5, remark_3, remark_2, 
+      IS_VALID, P_code)
+    values ( #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{remark1,jdbcType=VARCHAR}, #{remark4,jdbcType=VARCHAR}, 
+      #{remark5,jdbcType=VARCHAR}, #{remark3,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, 
+      #{is_valid,jdbcType=VARCHAR}, #{pCode,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateCode" parameterType="com.yrkj.code.bean.Code" >
+    update s_code
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.code != null" >
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark1 != null" >
+        remark_1 = #{record.remark1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark4 != null" >
+        remark_4 = #{record.remark4,jdbcType=VARCHAR},
+      </if>
+   
+      <if test="record.remark3 != null" >
+        remark_3 = #{record.remark3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark2 != null" >
+        remark_2 = #{record.remark2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.is_valid != null" >
+        IS_VALID = #{record.is_valid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pCode != null" >
+        P_code = #{record.pCode,jdbcType=VARCHAR},
+      </if>
+        remark_5 = ''
+    </set>
+    where id = #{record.id}
+  </update>
+  
+   <update id="updatePCode" parameterType="com.yrkj.code.bean.Code" >
+    update s_code
+    <set >
+      <if test="record.pCode != null" >
+        P_code = #{record.code,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where p_code =(SELECT CODE FROM (SELECT b.code FROM s_code b WHERE b.id = #{record.id}) aa) 
+  </update>
+  
+    <select id="selDanWei" parameterType="string" resultMap="codeResultMap">
+  	 select STRCUSTOMERCODE as code ,STRCUSTOMERNAME as name from customer 
+  	 <where> 1=1
+  	  <if test="code != null" >
+       and STRCUSTOMERCODE = #{code,jdbcType=VARCHAR}
+      </if>
+  	 </where> 
+  </select>
+  
+     <select id="selZhiYuan" parameterType="string" resultMap="codeResultMap">
+     select STREMPLOYEECODE  as code ,STREMPLOYEENAME as name  from employee
+  	 <where> 1=1
+  	  <if test="code != null" >
+       and STREMPLOYEECODE = #{code,jdbcType=VARCHAR}
+      </if>
+  	 </where> 
+  </select>
+     <select id="selBuMen" parameterType="string" resultMap="codeResultMap">
+  	 select STRDEPARTMENTCODE as code,STRDEPARTMENTNAME as name from DEPARTMENT 
+  	 <where> 1=1
+  	  <if test="code != null" >
+       and STRDEPARTMENTCODE = #{code,jdbcType=VARCHAR}
+      </if>
+  	 </where> 
+  </select>
+     <select id="selXiangMu" parameterType="string" resultMap="codeResultMap">
+     select STRCLASSCODE as code,STRCLASSNAME as name  from class1
+  	 <where> 1=1
+  	  <if test="code != null" >
+       and STRCLASSCODE = #{code,jdbcType=VARCHAR}
+      </if>
+  	 </where> 
+  </select>
+  
+    <select id="selKeMu" parameterType="string" resultMap="codeResultMap">
+    select STRACCOUNTCODE as code,STRACCOUNTNAME as name from account t 
+  	 <where> 1=1
+  	  <if test="code != null" >
+       and STRACCOUNTCODE = #{code,jdbcType=VARCHAR}
+      </if>
+  	 </where> 
+  </select>
+  
+ <!--  <select id="getCompanyData" parameterType="string" resultMap="codeResultMap">
+  	SELECT id, code, name, type, remark_1, remark_4, remark_5, remark_3, remark_2, IS_VALID, 
+    P_code FROM s_code WHERE IS_VALID ='1' and type=${type} and p_code=${pCode}  
+  </select> -->
+  
+    <select id="selCode" parameterType="com.yrkj.code.bean.Code" resultMap="codeResultMap">
+  	SELECT * FROM s_code 
+  </select>
+     <select id="selCodeOne" parameterType="string" resultMap="codeResultMap">
+  	SELECT  id,code, name, 
+      type, remark_1, remark_4, 
+      remark_5, remark_3, remark_2, 
+      IS_VALID, P_code FROM s_code 
+  	where 
+  	p_Code= #{pCode,jdbcType=VARCHAR} 
+  	<if test="type != null and type!='' and type!='null'" >
+       and type = #{type,jdbcType=VARCHAR} 
+      </if>
+  </select>
+  
+   <delete id="delCode" parameterType="list" >
+    delete from s_code
+    <where> 
+    	id in 
+	    <foreach collection="ids" item="id" index="index" separator="," open="(" close=")">  
+	        #{id} 
+	    </foreach> 
+     </where>
+  </delete>
+</mapper>

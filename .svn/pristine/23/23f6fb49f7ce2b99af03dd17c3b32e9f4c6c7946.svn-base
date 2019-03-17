@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yrkj.file.dao.IFileDao" >
+  <resultMap id="invoiceInofMap" type="com.yrkj.file.bean.InvoiceInof" >
+ 	<id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="duty_price" property="duty_price" jdbcType="VARCHAR" />
+    <result column="subject_code" property="subject_code" jdbcType="VARCHAR" />
+    <result column="creat_date" property="date" jdbcType="VARCHAR" />
+  </resultMap>
+  
+ <!--  <resultMap id = "Upgrade" type="com.mybatis.manager.persist.UpgradeNoteDto">
+    <result column="UPGRADE_ID" property="upgradeId" jdbcType="INTEGER" />
+    <result column="UPGRADE_NAME" property="upgradeName" jdbcType="VARCHAR" />
+</resultMap>
+<resultMap id="BaseResultMap" type="com.mybatis.manager.persist.ReleaseNoteDto" >
+    <result column="RELEASE_ID" property="releaseId" jdbcType="INTEGER" />
+    <result column="RELEASE_NAME" property="releaseName" jdbcType="VARCHAR" />
+    <result column="RELEASE_DESC" property="releaseDesc" jdbcType="VARCHAR" />
+    <association property = "upgrade" javaType="com.mybatis.manager.persist.UpgradeNoteDto" resultMap = "Upgrade"/>
+</resultMap> -->
+  
+   <insert id="insertAll" parameterType="java.util.ArrayList" >  
+    insert into P_InvoiceInof (id,duty_price,subject_code) VALUES  
+    <foreach collection="list" item="item" index="index" separator=",">  
+        (#{item.id},#{item.duty_price},#{item.subject_code})  
+    </foreach>  
+	</insert>  
+	
+<!-- 	<insert id="insertOne" parameterType="com.yrkj.file.bean.InvoiceInof" useGeneratedKeys="true" keyProperty="id" >  
+ -->	
+ <insert id="insertOne" parameterType="com.yrkj.file.bean.InvoiceInof"  >  
+     insert into P_InvoiceInof (id,duty_price,subject_code,creat_date) VALUES    
+        (#{id},#{duty_price},#{subject_code},#{date})  
+	</insert> 
+	
+  <select id="selInVoice" parameterType="string" resultMap="invoiceInofMap">
+	SELECT  b.id,
+	(select a.p_code from s_code a where a.type='duifangkemu' and a.name=b.duty_price ) as duty_price,
+	b.subject_code,b.creat_date FROM P_InvoiceInof b where b.id in (
+	   <foreach collection="list" item="item" index="index" separator=",">  
+        (#{item.id})  
+    </foreach> 
+    )
+  </select>
+
+  <select id="selInVoiceInof"  resultMap="invoiceInofMap">
+	SELECT  id,duty_price,subject_code,creat_date FROM P_InvoiceInof where creat_date between #{startDate} and #{endDate} 
+  </select>
+</mapper>

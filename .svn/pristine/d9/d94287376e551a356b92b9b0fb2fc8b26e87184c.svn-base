@@ -1,0 +1,203 @@
+
+$(function(){
+    // selData();
+    selectRow ();
+
+    var code,name,remark;
+      var sjsonData={};
+    //点击新增，把新增内容传递给后台
+    $("#add_user").on("click",function(){
+        code=$("#addSumCode").val();
+        name=$("#addSumName").val();
+        remark=$("#remark").val();
+        if(name!=""&&pwd!=""){
+            sjsonData = {
+                "code":code,
+                "name":name,
+                "remark":remark
+            };
+            var addurl="welcome/saveCode.do";
+            sendData(sjsonData,addurl);
+        }else{
+            layer.open({
+                title: '错误提示'
+                ,content: '保存失败！'
+                ,offset: '100px'
+            });
+        }
+
+    });
+    //点击修改管理员,把修改的信息传递给后台
+    $("#up-data").click(function(){
+        code=$("#upSumCode").text();
+        name=$("#upuSumName").val();
+        remark=$("#uremark")
+        layer.confirm('是否要修改',
+            {
+                title:'提示'
+                ,offset: '100px'
+            },function(){
+                sjsonData={
+                    "code":code,
+                    "name":name,
+                    "remark":remark
+                };
+                var updateUrl="welcome/updateCode.do";
+                sendData(sjsonData,updateUrl);
+                layer.closeAll();
+            });
+
+    });
+
+});
+
+function delBtn(uid){
+    //点击删除按钮，根据id
+    $("#btnDel").click(function(){
+        layer.confirm('是否要删除',
+            {
+                title:'提示'
+                ,offset: '100px'
+            },function(){
+                $.ajax({
+                    type:"post",
+                    url:"welcome/delCode.do",
+                    async:true,
+                    dataType:"json",
+                    data:{
+                        userId:uid
+                    },
+                    error:function(e){
+//					console.log(e);
+                        layer.open({
+                            title: '提示'
+                            ,content: '删除失败！'
+                            ,offset: '100px'
+                        });
+                    },
+                    success:function(){
+                        layer.open({
+                            title: '提示'
+                            ,content: '删除成功！'
+                            ,offset: '100px'
+                        });
+                        selData();
+                    }
+                });
+                layer.closeAll();
+            });
+
+    });
+}
+//将新增或修改的数据发送到后台
+function sendData(jdata,url){
+    $.ajax({
+        type:"post",
+        url:url,
+        async:true,
+        dataType:"json",
+        data:jdata,
+        error:function(e){
+            console.log(e);
+            layer.open({
+                title: '错误提示'
+                ,content: '保存失败！'
+                ,offset: '100px'
+            });
+            $("form")[1].reset();
+        },
+        success:function(){
+            layer.open({
+                title: '提示'
+                ,content: '保存成功！'
+                ,offset: '100px'
+            });
+            $("form")[1].reset();
+            $('#add_summary').modal('hide');
+            $('#update_summary').modal('hide');
+            selectRow();
+        }
+    });
+}
+
+//选择一行，获取当前行的数据，并展示在右边
+function selectRow () {
+    $('#detailtable').bootstrapTable({
+//            url:"",
+        toolbar: '#toolbar',//工具按钮用哪个容器
+        striped:true,//隔行变色
+        pagination:true,//设置为 true 会在表格底部显示分页条。
+        smartDisplay:true,//设置为 true 是程序自动判断显示分页信息和 card 视图。
+        search:true,//是否启用搜索框。
+        showColumns:true,//是否显示内容列下拉框。
+        showRefresh:true,//是否显示刷新按钮。
+        showToggle:true,//是否显示切换视图（table/card）按钮
+        uniqueId:'id',//对每一行指定唯一标识符。
+        sortOrder:'asc',//定义排序方式，'asc' 或者 'desc'
+        sortStable:true,//设置为 true 将获得稳定的排序，我们会添加\_position属性到 row 数据中
+        checkboxHeader:false,
+        singleSelect:true,
+        columns:[{
+            checkbox:true,
+        },{
+            field:'id',
+            title:'摘要ID',
+            visible:false
+        },{
+            field:'summaryCode',
+            title:'编码'
+        },{
+            field:'summaryName',
+            title:'名称'
+        },{
+            field:'state',
+            title:'摘要内容'
+        }],
+        data:[{
+            id:0,
+            summaryCode:'001',
+            summaryName:'增值税',
+            state:'hksjfkljlfdjl'
+        },{
+            id:1,
+            summaryCode:'002',
+            summaryName:'增值税',
+            state:'hksjfkljlfdjl'
+        },{
+            id:2,
+            summaryCode:'003',
+            summaryName:'增值税',
+            state:'hksjfkljlfdjl'
+        }],
+        onCheck:function (row,$element) {
+            console.log(row);
+            console.log($element);
+        }
+    });
+    function updateSave(code,name,remark){
+        $("#btn_edit").click(function(){
+            $("form")[1].reset();
+            $("#upSumCode").text(code);
+            $("#upSumName").val(name);
+            $("#uremark").val(remark);
+        });
+    }
+}
+//查询所有数据
+// function selData(){
+//     $.ajax({
+//         type:"post",
+//         url:"welcome/selUserInfo.do",
+//         async:true,
+//         dataType:"json",
+//         error: erryFunction,  //错误执行方法
+//         success: succFunction //成功执行方法
+//     })
+// }
+function erryFunction(e) {
+    console.log(e);
+}
+function succFunction(result) {
+
+    // selectRow ();
+}
